@@ -1,2 +1,142 @@
 #!/bin/bash
 # requirements: wget, jq, sed
+# shellcheck disable=SC2124,SC2001
+
+set -e
+set -o nounset
+set -o errexit
+set -o pipefail
+IFS=$'\n\t'
+_ME="${0##*/}"
+_VERSION="1.0.0"
+_HOMEPAGE="https://github.com/tg-z/snap-dl"
+
+[ -z "${SNAPCHAT_DOWNLOADS}" ] && SNAPCHAT_DOWNLOADS="./downloads"
+
+_info() {
+    # $1: info message
+    printf "%b\n" "\033[32mINFO\033[0m ${1}" >&2
+}
+
+_warn() {
+    # $1: warning message
+    printf "%b\n" "\033[33mWARNING\033[0m ${1}" >&2
+}
+
+_error() {
+    # $1: error message
+    printf "%b\n" "\033[31mERROR\033[0m ${1}" >&2
+    exit 1
+}
+
+_var() {
+  _jq="$(command -v jq)"
+  _wget="$(command -v wget)"
+  _sed="$(command -v sed)"
+}
+
+_check() {
+  _var
+  if [ ! -x "${_wget}" ]; then
+          _warn "you must install wget to run this command"
+          exit 1
+  fi
+  if [ ! -x "${_jq}" ]; then
+	  _warn "you must install jq to run this command"
+      exit 1
+  fi
+  if [ ! -x "${_sed}" ]; then
+	 _warn "you must install sed to run this command"
+          exit 1
+  fi
+}
+
+init() {
+  _check
+  "${_sed}" 
+}
+
+count() {
+  _check
+  "${_jq}" '.[][].Download_Link' -r "${1}" | wc -l
+}
+
+_banner() {
+  cat <<EOF
+       __ __
+.-----|__|  |_
+|-- __|  |   _|
+|_____|__|____|
+EOF
+}
+
+commands() {
+    cat <<EOF
+Available commands:
+  count
+  help
+  init
+  list
+  version
+EOF
+}
+
+help() {
+_banner
+cat <<EOF
+${_ME} - a shell script for downloading your snapchat memories.
+Usage:
+  ${_ME} <cmd> <options> args
+Options:
+  -h 	Display this help information.
+  -V 	Display version information and exit.
+Help:
+  ${_ME} help
+Home:
+  ${_HOMEPAGE}
+EOF
+commands
+}
+while getopts 'hV' flag; do
+  case "${flag}" in
+    h)
+      shift
+      help
+      exit 0
+      ;;
+     V)
+      shift
+      version
+      exit 0
+      ;;
+     *) _error "command not found" >&2
+      false
+      ;;
+esac
+done
+
+case "${1:-help}" in
+  ("commands")
+    shift
+    commands
+    ;;
+  ("count")
+    shift
+    count "$@"
+    ;;
+  ("help")
+    shift
+    help
+    ;;
+  ("init")
+    shift
+    init
+    ;;
+  ("list")
+    shift
+    list "${@}"
+    ;;
+  *) _error "command not found" >&2
+    false
+    ;;
+esac
