@@ -1,6 +1,6 @@
 #!/bin/bash
 # requirements: wget, jq, sed
-# shellcheck disable=SC2124,SC2001
+# shellcheck disable=SC2124,SC2001,SC2119,SC2120
 
 set -e
 set -o nounset
@@ -51,32 +51,46 @@ _check() {
   fi
 }
 
+version() {
+  printf "%s %s\n" "${_ME}" "${_VERSION}"
+}
+
 init() {
   _check
-  "${_sed}" 
+  mkdir -p "${SNAPCHAT_DOWNLOADS}"
+  "${_jq}" '.' "${1:-memories_history.json}"> pretty.json
+  "${_sed}" -i 's/Download Link/Download_Link/g' pretty.json
+  "${_jq}" '.[][].Download_Link' -r "${1:-pretty.json}" > links.txt
 }
 
 count() {
   _check
-  "${_jq}" '.[][].Download_Link' -r "${1}" | wc -l
+  "${_jq}" '.[][].Download_Link' -r "${1:-memories_history.json}" | wc -l
+}
+
+download() {
+  _check
+   "${_wget}" --input-file="${1:-links.txt}" -o log.txt
 }
 
 _banner() {
   cat <<EOF
-       __ __
-.-----|__|  |_
-|-- __|  |   _|
-|_____|__|____|
+                                   __ __ 
+.-----.-----.---.-.-----.______.--|  |  |
+|__ --|     |  _  |  _  |______|  _  |  |
+|_____|__|__|___._|   __|      |_____|__|
+                  |__|                   
 EOF
 }
 
 commands() {
     cat <<EOF
 Available commands:
-  count
-  help
   init
-  list
+  count
+  commands
+  download
+  help
   version
 EOF
 }
@@ -85,6 +99,7 @@ help() {
 _banner
 cat <<EOF
 ${_ME} - a shell script for downloading your snapchat memories.
+
 Usage:
   ${_ME} <cmd> <options> args
 Options:
@@ -124,6 +139,10 @@ case "${1:-help}" in
     shift
     count "$@"
     ;;
+  ("download")
+    shift
+    download
+    ;;
   ("help")
     shift
     help
@@ -131,10 +150,6 @@ case "${1:-help}" in
   ("init")
     shift
     init
-    ;;
-  ("list")
-    shift
-    list "${@}"
     ;;
   *) _error "command not found" >&2
     false

@@ -37,5 +37,33 @@ cp snap-dl ~/bin
 
 ## usage
 ```sh
+# go to snapchat dir
+cd ~/Documents/promnesia/snapchat
 
+# how to get snapchat data
+firefox -new-tab https://support.snapchat.com/en-US/a/download-my-data/
+
+# login to snapchat to request data
+firefox -new-tab https://accounts.snapchat.com/
+
+# request snapchat data + wait for email with download link + open to download zipfile
+firefox -new-tab https://accounts.snapchat.com/accounts/downloadmydata/
+
+# move zipfile to snapchat dir + extract it
+cp ~/Downloads/mydata*.zip ~/Documents/promnesia/snapchat/
+
+# go to repo + mkdir json
+cd snap-dl
+
+# copy 'memories_history.json' file to snap-dl directory
+cp ~/Documents/promnesia/snapchat/mydata_*/json/memories_history.json .
+
+# execute script to setup for download
+./snap-dl init
+
+# count how many memories you have
+./snap-dl count
+
+# download snapchat memories
+./snap-dl download
 ```
