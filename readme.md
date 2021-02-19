@@ -41,13 +41,13 @@ cp snap-dl ~/bin
 cd ~/Documents/promnesia/snapchat
 
 # how to get snapchat data
-firefox -new-tab https://support.snapchat.com/en-US/a/download-my-data/
+open https://support.snapchat.com/en-US/a/download-my-data/
 
 # login to snapchat to request data
-firefox -new-tab https://accounts.snapchat.com/
+open https://accounts.snapchat.com/
 
 # request snapchat data + wait for email with download link + open to download zipfile
-firefox -new-tab https://accounts.snapchat.com/accounts/downloadmydata/
+open https://accounts.snapchat.com/accounts/downloadmydata/
 
 # move zipfile to snapchat dir + extract it
 cp ~/Downloads/mydata*.zip ~/Documents/promnesia/snapchat/
