@@ -70,7 +70,7 @@ count() {
 
 download() {
   _check
-   "${_wget}" --input-file="${1:-links.txt}" -o log.txt
+   "${_wget}" -nv -i "${1:-links.txt}" -o log.txt --restrict-file-names="unix,lowercase" -P "${SNAPCHAT_DOWNLOADS}"
 }
 
 _banner() {
