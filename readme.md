@@ -29,18 +29,13 @@ snapchat allows you to takeout your data at any time, but it does not actually d
 git clone https://github.com/tg-z/snap-dl
 # cd into repo
 cd snap-dl
-# create ~/bin directory if you haven't already
-mkdir -p ~/bin
-# add script to path
+# add script to path (optional)
 cp snap-dl ~/bin
 ```
 
 ## usage
 ```sh
-# go to snapchat dir
-cd ~/Documents/promnesia/snapchat
-
-# how to get snapchat data
+# follow this guide on how to get snapchat data
 open https://support.snapchat.com/en-US/a/download-my-data/
 
 # login to snapchat to request data
@@ -49,14 +44,11 @@ open https://accounts.snapchat.com/
 # request snapchat data + wait for email with download link + open to download zipfile
 open https://accounts.snapchat.com/accounts/downloadmydata/
 
-# move zipfile to snapchat dir + extract it
-cp ~/Downloads/mydata*.zip ~/Documents/promnesia/snapchat/
+# move zipfile to current dir + extract it
+cp ~/Downloads/mydata*.zip .
 
-# go to repo + mkdir json
-cd snap-dl
-
-# copy 'memories_history.json' file to snap-dl directory
-cp ~/Documents/promnesia/snapchat/mydata_*/json/memories_history.json .
+# copy 'memories_history.json' file to snap-dl clone directory
+cp mydata_*/json/memories_history.json .
 
 # execute script to setup for download
 ./snap-dl init
