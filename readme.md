@@ -34,6 +34,7 @@ cp snap-dl ~/bin
 ```
 
 ## usage
+as of right now, the most important function (downloading) is unfinished :/
 ```sh
 # follow this guide on how to get snapchat data
 open https://support.snapchat.com/en-US/a/download-my-data/
